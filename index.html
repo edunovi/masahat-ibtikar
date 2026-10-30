@@ -220,6 +220,27 @@ body{background:radial-gradient(ellipse at 95% 0%,rgba(133,120,232,.11),transpar
 
 .prompt-preview{margin:12px 0;border:1px solid #dedbf5;border-radius:15px;overflow:hidden;background:#fafaff}.prompt-preview>summary{cursor:pointer;list-style:none;padding:14px 18px;color:#6558c6;font-weight:800;display:flex;align-items:center;justify-content:space-between}.prompt-preview>summary::-webkit-details-marker{display:none}.prompt-preview[open]>summary span{transform:rotate(45deg)}.prompt-preview .prompt-text{margin:0;border-radius:0}.prompt-preview:not([open])+.copy-footer{margin-top:10px}
 
+
+/* Device-specific refinements: iPhone + iPad */
+@media(max-width:620px){
+ .studio-single .ideas-grid{gap:7px!important;margin-bottom:11px!important}
+ .studio-single .idea-tile{min-height:65px!important;padding:7px 4px!important;gap:3px!important}
+ .studio-single .idea-icon{margin:0 auto!important}
+ .studio-single .idea-title{line-height:1.3!important}
+ .studio-single .prompt-document{padding:14px!important}
+ .studio-single .prompt-compact-actions>.action.primary{min-height:44px!important}
+ .studio-single .prompt-compact-actions>.prompt-preview>summary{min-height:44px!important}
+ .studio-single .prompt-document-head{margin-bottom:9px!important}
+ .studio-single .prompt-document-head h3{line-height:1.45}
+ .studio-single .prompt-short-desc{line-height:1.6}
+}
+@media(min-width:621px) and (max-width:1100px){
+ .studio-single .prompt-compact-actions{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+ .studio-single .prompt-compact-actions>.action.primary{flex:1 1 220px;width:auto;min-width:0}
+ .studio-single .prompt-compact-actions>.prompt-preview{flex:1 1 220px;min-width:0}
+ .studio-single .prompt-compact-actions>.prompt-preview[open]{flex:1 0 100%}
+ .studio-single .prompt-document{padding:18px}
+}
 /* Responsive compact prompt card — 2026-10-31 */
 .studio-single .prompt-document{background:#fff;border-color:#dedcf2;padding:clamp(14px,2.2vw,23px)}
 .studio-single .prompt-document-head{margin-bottom:11px}
@@ -330,6 +351,7 @@ function renderPrompts(){
  };
  const ideaIcon=(code)=>`<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[code]||iconPaths['/prompt']}</svg>`;
  const shortNames={'/setup':['ابدأ من هنا','✦'],'/prompt':['تحسين الأوامر','✧'],'/worksheet':['أوراق العمل','▤'],'/lessonplan':['تخطيط الدروس','▣'],'/slides':['العروض','▥'],'/activity':['الأنشطة','✳'],'/assessment':['التقويم','✓'],'/infographic':['الإنفوجرافيك','◈'],'/remedial':['الخطط العلاجية','♡'],'/nafs':['نافس','◎'],'/newsletter':['النشرات','▧'],'/review':['مراجعة الجودة','✺']};
+ const promptDescriptions={"/setup":"فعّل منظومة الأوامر التعليمية وقواعد الجودة داخل المحادثة.","/prompt":"حوّل فكرتك إلى أمر واضح ودقيق للحصول على نتائج أفضل.","/worksheet":"صمّم ورقة عمل متدرجة، وراجع نصها قبل توليد صورتها.","/lessonplan":"خطّط حصة مترابطة بأهداف وأنشطة وتقويم مناسب للزمن.","/slides":"أنشئ محتوى عرض تعليمي منظمًا وجذابًا للمتعلمين.","/activity":"ابتكر أنشطة صفية تفاعلية تراعي الفروق الفردية.","/assessment":"أنشئ أدوات تقويم تقيس الفهم والتطبيق والاستدلال.","/infographic":"حوّل المفاهيم إلى إنفوجرافيك تعليمي واضح ومنظم.","/remedial":"ابنِ خطة دعم علاجي مبنية على احتياجات المتعلمين.","/nafs":"أعد أنشطة وأسئلة تحاكي مهارات اختبارات نافس.","/newsletter":"صغ نشرات تعليمية مختصرة وجاهزة للتصميم.","/review":"دقّق المحتوى علميًا ولغويًا وتربويًا قبل اعتماده."};
  const position=data.findIndex(x=>x.idx===activePrompt);
  const x=PROMPTS[activePrompt],isFav=favorites.includes(x.code);
  const prev=position>0?data[position-1]:null,next=position<data.length-1?data[position+1]:null;
@@ -337,7 +359,7 @@ function renderPrompts(){
  
  <div class="ideas-grid" role="group" aria-label="جميع أفكار وأوامر الذكاء الاصطناعي">${data.map(y=>`<button type="button" class="idea-tile ${y.idx===activePrompt?'selected':''}" data-select="${y.idx}" aria-pressed="${y.idx===activePrompt}" title="${esc(y.title)}"><span class="idea-icon" aria-hidden="true">${ideaIcon(y.code)}</span><span class="idea-title">${esc((shortNames[y.code]||[y.title])[0])}</span></button>`).join('')}</div>
  <div class="selected-command-bar"><span class="selected-title"><span class="selected-dot" aria-hidden="true"></span>الأمر المختار <small>— جاهز للنسخ</small></span><button type="button" class="fav-action ${isFav?'is-fav':''}" data-fav="${activePrompt}" aria-pressed="${isFav}" aria-label="${isFav?'إزالة من المفضلة':'إضافة إلى المفضلة'}">${isFav?'★':'☆'} <small>${isFav?'في المفضلة':'أضف للمفضلة'}</small></button></div>
- <article class="prompt-document" id="activePromptDocument"><div class="prompt-document-head"><div><div class="doc-label">الأمر الجاهز للنسخ</div><h3>${esc(x.title)}</h3><p class="prompt-short-desc">أمر تعليمي احترافي جاهز للنسخ والاستخدام في ChatGPT، مع تعليمات تفصيلية قابلة للتخصيص.</p></div></div><div class="prompt-compact-actions"><button type="button" class="action primary" data-copy="${activePrompt}">⧉ نسخ البرومبت</button><details class="prompt-preview"><summary>عرض البرومبت <span aria-hidden="true">＋</span></summary><div class="prompt-text" dir="rtl" tabindex="0" aria-label="نص الأمر كاملًا">${esc(formatPrompt(x.body))}</div></details></div></article>
+ <article class="prompt-document" id="activePromptDocument"><div class="prompt-document-head"><div><div class="doc-label">الأمر الجاهز للنسخ</div><h3>${esc(x.title)}</h3><p class="prompt-short-desc">${esc(promptDescriptions[x.code]||"أمر تعليمي احترافي جاهز للنسخ والتخصيص.")}</p></div></div><div class="prompt-compact-actions"><button type="button" class="action primary" data-copy="${activePrompt}">⧉ نسخ البرومبت</button><details class="prompt-preview"><summary>عرض البرومبت <span aria-hidden="true">＋</span></summary><div class="prompt-text" dir="rtl" tabindex="0" aria-label="نص الأمر كاملًا">${esc(formatPrompt(x.body))}</div></details></div></article>
  <nav class="prompt-pager" aria-label="التنقل بين الأوامر"><button type="button" class="pager-button" ${prev?'data-select="'+prev.idx+'"':'disabled'}>→ الأمر السابق</button><span class="pager-position">${position+1} / ${data.length}</span><button type="button" class="pager-button" ${next?'data-select="'+next.idx+'"':'disabled'}>الأمر التالي ←</button></nav></div>`;
 }
 const EVIDENCE_GUIDE={
