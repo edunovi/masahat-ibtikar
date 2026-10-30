@@ -219,6 +219,19 @@ body{background:radial-gradient(ellipse at 95% 0%,rgba(133,120,232,.11),transpar
 .studio-intro-static .intro-static-title{padding:13px 19px 0;font-size:14px;font-weight:800;color:#202444}.studio-intro-static .intro-static-title span{color:#8578e8;margin-left:6px}.studio-intro-static .disclosure-body{display:block!important;padding-top:4px}@media(max-width:700px){.studio-intro-static .intro-static-title{padding:12px 13px 0;font-size:12px}}
 
 .prompt-preview{margin:12px 0;border:1px solid #dedbf5;border-radius:15px;overflow:hidden;background:#fafaff}.prompt-preview>summary{cursor:pointer;list-style:none;padding:14px 18px;color:#6558c6;font-weight:800;display:flex;align-items:center;justify-content:space-between}.prompt-preview>summary::-webkit-details-marker{display:none}.prompt-preview[open]>summary span{transform:rotate(45deg)}.prompt-preview .prompt-text{margin:0;border-radius:0}.prompt-preview:not([open])+.copy-footer{margin-top:10px}
+
+/* Responsive compact prompt card — 2026-10-31 */
+.studio-single .prompt-document{background:#fff;border-color:#dedcf2;padding:clamp(14px,2.2vw,23px)}
+.studio-single .prompt-document-head{margin-bottom:11px}
+.studio-single .prompt-document-head h3{margin:3px 0 5px;font-size:clamp(20px,2.7vw,26px)}
+.prompt-short-desc{margin:0;color:#68718d;font-size:12px;line-height:1.75;font-weight:500}
+.prompt-compact-actions{display:flex;align-items:flex-start;gap:11px;flex-wrap:wrap}
+.studio-single .prompt-compact-actions>.action.primary{width:auto;min-width:200px;min-height:45px;padding:10px 23px;flex:0 0 auto;margin:0}
+.studio-single .prompt-compact-actions>.prompt-preview{margin:0;flex:0 1 220px;min-width:180px;background:#fafaff}
+.studio-single .prompt-compact-actions>.prompt-preview>summary{min-height:45px;padding:9px 15px}
+.studio-single .prompt-compact-actions>.prompt-preview[open]{flex:1 0 100%;order:3}
+.studio-single .prompt-compact-actions>.prompt-preview[open] .prompt-text{max-height:none}
+@media(max-width:620px){.studio-single .prompt-compact-actions{display:grid;grid-template-columns:1fr;gap:9px}.studio-single .prompt-compact-actions>.action.primary,.studio-single .prompt-compact-actions>.prompt-preview{width:100%;min-width:0;max-width:none;flex:auto}.studio-single .prompt-document-head h3{font-size:22px}.prompt-short-desc{font-size:11px}}
 </style><style>
 .brand-sub{font-size:11px;font-weight:500;color:#77809b;margin-top:1px}
 .author-signature{display:flex;flex-direction:column;align-items:flex-end;gap:0;padding:9px 17px;background:linear-gradient(125deg,#f0edff,#eafaf5);border:1px solid #ddd9f6;border-radius:17px;min-width:180px}
@@ -324,7 +337,7 @@ function renderPrompts(){
  
  <div class="ideas-grid" role="group" aria-label="جميع أفكار وأوامر الذكاء الاصطناعي">${data.map(y=>`<button type="button" class="idea-tile ${y.idx===activePrompt?'selected':''}" data-select="${y.idx}" aria-pressed="${y.idx===activePrompt}" title="${esc(y.title)}"><span class="idea-icon" aria-hidden="true">${ideaIcon(y.code)}</span><span class="idea-title">${esc((shortNames[y.code]||[y.title])[0])}</span></button>`).join('')}</div>
  <div class="selected-command-bar"><span class="selected-title"><span class="selected-dot" aria-hidden="true"></span>الأمر المختار <small>— جاهز للنسخ</small></span><button type="button" class="fav-action ${isFav?'is-fav':''}" data-fav="${activePrompt}" aria-pressed="${isFav}" aria-label="${isFav?'إزالة من المفضلة':'إضافة إلى المفضلة'}">${isFav?'★':'☆'} <small>${isFav?'في المفضلة':'أضف للمفضلة'}</small></button></div>
- <article class="prompt-document" id="activePromptDocument"><div class="prompt-document-head"><div><div class="doc-label">الأمر الجاهز للنسخ</div><h3>${esc(x.title)}</h3><span class="doc-code" dir="ltr">${esc(x.code)}</span></div></div><div class="doc-actions top-copy"><button type="button" class="action primary" data-copy="${activePrompt}">⧉ نسخ البرومبت كاملًا</button></div><details class="prompt-preview"><summary>عرض البرومبت كاملًا <span aria-hidden="true">＋</span></summary><div class="prompt-text" dir="rtl" tabindex="0" aria-label="نص الأمر كاملًا">${esc(formatPrompt(x.body))}</div></details><div class="copy-footer"><span>يُنسخ النص كاملًا مع الأسطر والترقيم</span><button type="button" class="action primary" data-copy="${activePrompt}">⧉ نسخ البرومبت كاملًا</button></div></article>
+ <article class="prompt-document" id="activePromptDocument"><div class="prompt-document-head"><div><div class="doc-label">الأمر الجاهز للنسخ</div><h3>${esc(x.title)}</h3><p class="prompt-short-desc">أمر تعليمي احترافي جاهز للنسخ والاستخدام في ChatGPT، مع تعليمات تفصيلية قابلة للتخصيص.</p></div></div><div class="prompt-compact-actions"><button type="button" class="action primary" data-copy="${activePrompt}">⧉ نسخ البرومبت</button><details class="prompt-preview"><summary>عرض البرومبت <span aria-hidden="true">＋</span></summary><div class="prompt-text" dir="rtl" tabindex="0" aria-label="نص الأمر كاملًا">${esc(formatPrompt(x.body))}</div></details></div></article>
  <nav class="prompt-pager" aria-label="التنقل بين الأوامر"><button type="button" class="pager-button" ${prev?'data-select="'+prev.idx+'"':'disabled'}>→ الأمر السابق</button><span class="pager-position">${position+1} / ${data.length}</span><button type="button" class="pager-button" ${next?'data-select="'+next.idx+'"':'disabled'}>الأمر التالي ←</button></nav></div>`;
 }
 const EVIDENCE_GUIDE={
