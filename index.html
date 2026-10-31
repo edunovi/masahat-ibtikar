@@ -74,15 +74,15 @@ function filters(){const a=['الكل','التخطيط والتدريس','الت
 function renderList(){const q=$('search').value.trim().toLowerCase();const list=DATA.filter(x=>(section==='الكل'||x.section===section)&&(!onlyFav||fav.includes(x.id))&&(x.title.toLowerCase().includes(q)||x.description.toLowerCase().includes(q)||x.section.toLowerCase().includes(q)));$('count').textContent=`${list.length} أداة`; $('tool-list').innerHTML=list.map(x=>`<div class="tool ${selected===x.id?'selected':''}"><button style="border:0;background:none;text-align:right;flex:1;color:inherit;cursor:pointer" data-pick="${x.id}"><b>${safe(x.title)}</b><small>${safe(x.description)}</small></button><button class="star ${fav.includes(x.id)?'on':''}" aria-label="${fav.includes(x.id)?'إزالة من':'إضافة إلى'} المفضلة" data-star="${x.id}">${fav.includes(x.id)?'★':'☆'}</button></div>`).join('')||'<p class="muted">لا توجد نتائج. غيّر البحث أو الفلتر.</p>';document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{selected=b.dataset.pick;expanded=false;renderList();renderDetail();if(innerWidth<761)$('detail').scrollIntoView({behavior:'smooth'})});document.querySelectorAll('[data-star]').forEach(b=>b.onclick=()=>{fav=fav.includes(b.dataset.star)?fav.filter(x=>x!==b.dataset.star):[...fav,b.dataset.star];save();renderList()});}
 function renderPromptMarkdown(raw){
 const esc=v=>String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const inline=v=>esc(v).replace(/\\*\\*(.+?)\\*\\*/g,'<strong>$1</strong>').replace(/\\*(.+?)\\*/g,'<em>$1</em>');
-const lines=String(raw).replace(/\\r\\n?/g,'\\n').split('\\n');
+const inline=v=>esc(v).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>');
+const lines=String(raw).replace(/\r\n?/g,'\n').split('\n');
 let html='',list='';
 const close=()=>{if(list){html+='</'+list+'>';list='';}};
 for(const line of lines){
 const t=line.trim();if(!t){close();html+='<div class="md-blank" aria-hidden="true"></div>';continue;}
-const heading=t.match(/^(#{1,6})\\s+(.+)$/);if(heading){close();const level=Math.min(heading[1].length+1,4);html+='<h'+level+' class="md-heading">'+inline(heading[2])+'</h'+level+'>';continue;}
+const heading=t.match(/^(#{1,6})\s+(.+)$/);if(heading){close();const level=Math.min(heading[1].length+1,4);html+='<h'+level+' class="md-heading">'+inline(heading[2])+'</h'+level+'>';continue;}
 if(/^[-━─]{3,}$/.test(t)){close();html+='<hr class="md-rule">';continue;}
-const bullet=t.match(/^[-*•]\\s+(.+)$/),number=t.match(/^([0-9]+)[.)]\\s+(.+)$/);
+const bullet=t.match(/^[-*•]\s+(.+)$/),number=t.match(/^([0-9]+)[.)]\s+(.+)$/);
 if(bullet||number){const kind=bullet?'ul':'ol';if(list!==kind){close();html+='<'+kind+'>';list=kind;}html+='<li>'+inline(bullet?bullet[1]:number[2])+'</li>';continue;}
 close();html+='<p>'+inline(t)+'</p>';
 }
